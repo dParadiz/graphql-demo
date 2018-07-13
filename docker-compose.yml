@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  client:
+    image: nginx:alpine
+    container_name: graphql-demo-client
+    volumes:
+      - ./client:/var/www/html
+
+  api:
+    image: php:7.2-apache
+    container_name: graphql-demo-api
+    volumes:
+      - ./api:/var/www/html
+      - ./docker/api/sites-available:/etc/apache2/sites-available
+    ports:
+      - 127.0.0.33:80:80
+
+  storage:
+    image: mongo:4
+    container_name: graphql-demo-storage
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: auNgooqu7E
+    volumes:
+      - dbstore:/data/db
+
+volumes:
+   dbstore:
+      driver: local
+
