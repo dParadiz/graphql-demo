@@ -11,7 +11,7 @@ use Psr\Http\Message\ResponseInterface;
 use Zend\Diactoros\Response\JsonResponse;
 use Zend\HttpHandlerRunner\Emitter\SapiEmitter;
 
-class App
+class Dispatcher
 {
     /**
      * @var array|MiddlewareInterface[]
@@ -19,7 +19,7 @@ class App
     private $stack;
 
     /**
-     * App constructor.
+     * Dispatcher constructor.
      * @param MiddlewareInterface[] $stack
      */
     public function __construct(array $stack)
@@ -64,7 +64,7 @@ class App
                  */
                 public function handle(ServerRequestInterface $request): ResponseInterface
                 {
-                    return new JsonResponse(['some' => 'thing']);
+                    return new JsonResponse([]);
                 }
             });
     }

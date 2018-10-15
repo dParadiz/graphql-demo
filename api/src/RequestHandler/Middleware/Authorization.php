@@ -22,15 +22,10 @@ class Authorization implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $response = $handler->handle($request);
+        // TODO decode auth token and set attributes
+        $request = $request->withAttribute('auth', ['name' => 'Authorized user']);
 
-        if ($response instanceof JsonResponse) {
+        return $handler->handle($request);
 
-            $payload = $response->getPayLoad();
-            $payload['added'] = 'thing';
-
-            $response = $response->withPayload($payload);
-        }
-        return $response;
     }
 }
