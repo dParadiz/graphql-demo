@@ -5,13 +5,13 @@ namespace App\GraphQLSchema\Type;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 
-class WorkingHour extends ObjectType
+class WorkingUnit extends ObjectType
 {
     public function __construct()
     {
         $config = [
-            'name' => 'WorkingHour',
-            'description' => 'Working hour',
+            'name' => 'WorkingUnit',
+            'description' => 'Working unit',
             'fields' => function () {
                 return [
                     'id' => Type::string(),

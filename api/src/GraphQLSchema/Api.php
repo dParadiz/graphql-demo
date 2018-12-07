@@ -2,9 +2,6 @@
 
 namespace App\GraphQLSchema;
 
-use App\GraphQLSchema\Type\ProjectType;
-use App\GraphQLSchema\Type\UserType;
-use App\GraphQLSchema\Type\WorkingHour;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
@@ -14,16 +11,9 @@ use App\User;
 
 class Api extends Schema
 {
-    public static $user;
-    public static $project;
-    public static $workingHour;
 
     public function __construct()
     {
-        self::$user = new UserType();
-        self::$project = new ProjectType();
-        self::$workingHour = new WorkingHour();
-
         parent::__construct([
             'query' => $this->getQuery(),
             'mutation' => $this->getMutation(),
@@ -36,7 +26,7 @@ class Api extends Schema
             'name' => 'Query',
             'fields' => [
                 'user' => [
-                    'type' => self::$user,
+                    'type' => TypeRegistry::user(),
                     'args' => [
                         'id' => Type::nonNull(Type::string())
                     ],
@@ -45,7 +35,7 @@ class Api extends Schema
                     }
                 ],
                 'users' => [
-                    'type' => Type::listOf(self::$user),
+                    'type' => Type::listOf(TypeRegistry::user()),
                     'args' => [
                         'role' => Type::string()
                     ],
@@ -55,25 +45,25 @@ class Api extends Schema
 
                 ],
                 'project' => [
-                    'type' => self::$project,
+                    'type' => TypeRegistry::project(),
                     'args' => [
                         'id' => Type::string(),
                     ]
                 ],
                 'projects' => [
-                    'type' => Type::listOf(self::$project),
+                    'type' => Type::listOf(TypeRegistry::project()),
                     'args' => [
                         'id' => Type::string(),
                     ]
                 ],
-                'workingHour' => [
-                    'type' => self::$workingHour,
+                'workingUnit' => [
+                    'type' => TypeRegistry::workingUnit(),
                     'args' => [
                         'id' => Type::string(),
                     ]
                 ],
-                'workingHours' => [
-                    'type' => Type::listOf(self::$workingHour),
+                'workingUnits' => [
+                    'type' => Type::listOf(TypeRegistry::workingUnit()),
                     'args' => [
                         'id' => Type::string(),
                     ]
@@ -118,7 +108,6 @@ class Api extends Schema
                         ],
                         'resolveField' => function ($data, $args, $context, ResolveInfo $info) {
                             if ($info->fieldName === 'create') {
-                                error_log(var_export($args, true));
                                 return 1;
                             }
 

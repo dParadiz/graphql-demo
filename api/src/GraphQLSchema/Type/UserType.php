@@ -2,7 +2,8 @@
 
 namespace App\GraphQLSchema\Type;
 
-use App\GraphQLSchema\Api;
+
+use App\GraphQLSchema\TypeRegistry;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
@@ -23,22 +24,22 @@ class UserType extends ObjectType
                     'email' => Type::string(),
                     'roles' => Type::listOf(Type::string()),
                     'projects' => [
-                        'type' => Type::listOf(Api::$project),
+                        'type' => Type::listOf(TypeRegistry::project()),
                         'args' => [
                             'limit' => [
-                                'type' =>Type::int(),
-                                'description' => 'Limit the list of user projects. Default is set to 10',
-                                'default' => 10,
+                                'type' => Type::int(),
+                                'description' => 'Limit the list of user projects.',
+                                'default' => 5,
                             ],
                             'skipp' => [
-                                'type' =>Type::int(),
+                                'type' => Type::int(),
                                 'description' => 'Skipp number of object',
                                 'default' => 0,
                             ]
 
                         ]
                     ],
-                    'workingHours' => Type::listOf(Api::$workingHour)
+                    'workingHours' => Type::listOf(TypeRegistry::workingUnit())
                 ];
             },
             'resolveField' => function (User\QueryModel $user, $args, $context, ResolveInfo $info) {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\WorkingHour;
+namespace App\WorkingUnit;
 
 class Repository
 {
