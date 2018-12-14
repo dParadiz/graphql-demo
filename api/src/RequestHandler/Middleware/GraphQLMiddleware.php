@@ -46,8 +46,16 @@ class GraphQLMiddleware implements Server\MiddlewareInterface
             $rootValues = $this->rootValues;
             $rootValues['auth'] = $request->getAttribute('auth', null);
 
-            $result = GraphQL::executeQuery($this->schema, $query, array_filter($rootValues), null, $input['variables'] ?? null);
+            $result = GraphQL::executeQuery(
+                $this->schema,
+                $query,
+                array_filter($rootValues),
+                null,
+                $input['variables'] ?? null
+            );
+
             $output = $result->toArray();
+
         } catch (\Exception $e) {
             $output = [
                 'error' => [

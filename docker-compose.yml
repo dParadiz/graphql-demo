@@ -8,8 +8,10 @@ services:
       - ./client:/var/www/html
 
   api:
-    image: php:7.2-apache
+    image: graphql-demo-api
     container_name: graphql-demo-api
+    build:
+      context: ./api
     volumes:
       - ./api:/var/www/html
       - ./docker/api/sites-available:/etc/apache2/sites-available
