@@ -8,16 +8,31 @@ use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 
 use App\User;
+use App\Project;
 
 class Api extends Schema
 {
+    /**
+     * @var User\Repository $userRegistry
+     */
+    private $userRegistry;
 
-    public function __construct()
+    /**
+     * @var Project\Repository $projectRepository
+     */
+    private $projectRepository;
+
+
+    public function __construct(User\Repository $userRegistry, Project\Repository $projectRepository)
     {
+        $this->userRegistry = $userRegistry;
+        $this->projectRepository = $projectRepository;
+
         parent::__construct([
             'query' => $this->getQuery(),
             'mutation' => $this->getMutation(),
         ]);
+
     }
 
     private function getQuery(): ObjectType
@@ -26,21 +41,21 @@ class Api extends Schema
             'name' => 'Query',
             'fields' => [
                 'user' => [
-                    'type' => TypeRegistry::user(),
+                    'type' => TypeRegistry::user($this->projectRepository),
                     'args' => [
                         'id' => Type::nonNull(Type::string())
                     ],
                     'resolve' => function ($context, $args) {
-                        return (new User\Repository())->getUserById($args['id']);
+                        return $this->userRegistry->getUserById($args['id']);
                     }
                 ],
                 'users' => [
-                    'type' => Type::listOf(TypeRegistry::user()),
+                    'type' => Type::listOf(TypeRegistry::user($this->projectRepository)),
                     'args' => [
                         'role' => Type::string()
                     ],
                     'resolve' => function ($context, $args) {
-                        return (new User\Repository())->getUserById($args['id']);
+                        return $this->userRegistry->getUsers();
                     }
 
                 ],
@@ -82,15 +97,16 @@ class Api extends Schema
                         'name' => 'userManagementOperations',
                         'fields' => [
                             'create' => [
-                                'type' => Type::int(),
+                                'type' =>  TypeRegistry::mutationResponse(),
                                 'args' => [
+                                    'id' => ['type' => Type::nonNull(Type::string())],
                                     'name' => ['type' => Type::string()],
                                     'email' => ['type' => Type::string()],
                                     'roles' => ['type' => Type::listOf(Type::string())]
                                 ],
                             ],
                             'update' => [
-                                'type' => Type::int(),
+                                'type' => TypeRegistry::mutationResponse(),
                                 'args' => [
                                     'id' => ['type' => Type::nonNull(Type::string())],
                                     'name' => ['type' => Type::string()],
@@ -99,7 +115,7 @@ class Api extends Schema
                                 ],
                             ],
                             'remove' => [
-                                'type' => Type::int(),
+                                'type' => TypeRegistry::mutationResponse(),
                                 'args' => [
                                     'id' => ['type' => Type::nonNull(Type::string())]
                                 ],
@@ -107,25 +123,26 @@ class Api extends Schema
                             ],
                         ],
                         'resolveField' => function ($data, $args, $context, ResolveInfo $info) {
+
                             if ($info->fieldName === 'create') {
-                                return 1;
+                                return $this->userRegistry->create($args['id'], $args['name'], $args['email'], $args['roles']);
                             }
 
                             if ($info->fieldName === 'update') {
-                                return 2;
+                                return $this->userRegistry->update($args['id'], $args['name'], $args['email'], $args['roles']);
                             }
 
                             if ($info->fieldName === 'remove') {
-                                return 3;
+                                return $this->userRegistry->remove($args['id']);
                             }
 
-                            return -1;
+                            return '';
                         },
                     ]),
                     'resolve' => function ($context, $args) {
                         // user field resolver
                         // maybe permission check
-                        // return null will skipp field resolvers
+                        // return null will skip field resolvers
                         return '';
                     },
                 ]

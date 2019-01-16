@@ -1,6 +1,7 @@
 <?php
 
 namespace App\GraphQLSchema;
+use App\Project;
 
 class TypeRegistry
 {
@@ -20,12 +21,17 @@ class TypeRegistry
     private static $workingUnit;
 
     /**
+     * @var Type\MutationResponse
+     */
+    private static $mutationResponse;
+
+    /**
      * @return Type\UserType
      */
-    public static function user(): Type\UserType
+    public static function user(Project\Repository $projectRepository): Type\UserType
     {
         if (null === self::$user) {
-            self::$user = new Type\UserType();
+            self::$user = new Type\UserType($projectRepository);
         }
 
         return self::$user;
@@ -53,6 +59,18 @@ class TypeRegistry
         }
 
         return self::$workingUnit;
+    }
+
+       /**
+     * @return Type\MutationResponse
+     */
+    public static function mutationResponse(): Type\MutationResponse
+    {
+        if (null === self::$mutationResponse) {
+            self::$mutationResponse = new Type\MutationResponse();
+        }
+
+        return self::$mutationResponse;
     }
 
 }

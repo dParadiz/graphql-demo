@@ -12,7 +12,7 @@ use App\User;
 
 class UserType extends ObjectType
 {
-    public function __construct()
+    public function __construct(Project\Repository $projectRepository)
     {
         $config = [
             'name' => 'User',
@@ -42,9 +42,9 @@ class UserType extends ObjectType
                     'workingHours' => Type::listOf(TypeRegistry::workingUnit())
                 ];
             },
-            'resolveField' => function (User\QueryModel $user, $args, $context, ResolveInfo $info) {
+            'resolveField' => function (User\QueryModel $user, $args, $context, ResolveInfo $info) use ($projectRepository) {
                 if ($info->fieldName === 'projects') {
-                    return (new Project\Repository)->getProjectByUserId($user->id, $args);
+                    return $projectRepository->getProjectByUserId($user->id, $args);
                 }
 
                 if ($info->fieldName === 'workingHours') {
