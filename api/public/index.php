@@ -1,11 +1,20 @@
 <?php
 require_once __DIR__ . '/../vendor/autoload.php';
-$services = include __DIR__ . '/../config/services.php';
 
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Zend\Diactoros\ServerRequestFactory;
+use App\RequestHandler\Router;
+use App\RequestHandler\Dispatcher;
 
-$request = Zend\Diactoros\ServerRequestFactory::fromGlobals($_SERVER, $_GET, $_POST, $_COOKIE, $_FILES);
+$containerBuilder = new ContainerBuilder();
+$loader = new YamlFileLoader($containerBuilder, new FileLocator(__DIR__ . '/../config'));
+$loader->load('services.yaml');
 
-$stack = (new App\RequestHandler\Router($services))->getStackForUri($request->getUri()->getPath());
+$request = ServerRequestFactory::fromGlobals($_SERVER, $_GET, $_POST, $_COOKIE, $_FILES);
 
-(new App\RequestHandler\Dispatcher($stack))->handle($request);
+$stack = (new Router($containerBuilder))->getStackForUri($request->getUri()->getPath());
+
+(new Dispatcher($stack))->handle($request);
 

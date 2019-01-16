@@ -3,6 +3,7 @@
 namespace App\RequestHandler;
 
 use Psr\Http\Server\MiddlewareInterface;
+use Psr\Container\ContainerInterface;
 
 class Router
 {
@@ -11,7 +12,7 @@ class Router
      */
     private $container;
 
-    public function __construct(\Pimple\Container $container)
+    public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
     }
@@ -25,14 +26,14 @@ class Router
 
         if ($uri === '/') {
             return [
-                $this->container['graphql-middleware'],
-                $this->container['authentication-middleware'],
+                $this->container->get('graphql_middleware'),
+                $this->container->get('authentication_middleware'),
             ];
         }
 
         if ($uri === '/authenticate') {
             return [
-                $this->container['authentication-middleware'],
+                $this->container('authentication_middleware'),
             ];
         }
     }

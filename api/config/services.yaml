@@ -1,0 +1,9 @@
+
+services:
+    graphql_api:
+      class:       App\GraphQLSchema\Api
+    graphql_middleware:
+        class:     App\RequestHandler\Middleware\GraphQLMiddleware
+        arguments: ['@graphql_api']
+    authentication_middleware:
+        class:     App\RequestHandler\Middleware\Authorization
