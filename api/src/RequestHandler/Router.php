@@ -3,11 +3,18 @@
 namespace App\RequestHandler;
 
 use Psr\Http\Server\MiddlewareInterface;
-use App\GraphQLSchema\Api;
 
 class Router
 {
+    /**
+     * @var \Pimple\Container
+     */
+    private $container;
 
+    public function __construct(\Pimple\Container $container)
+    {
+        $this->container = $container;
+    }
     /**
      * @param string $uri
      *
@@ -15,16 +22,17 @@ class Router
      */
     public function getStackForUri(string $uri): array
     {
+
         if ($uri === '/') {
             return [
-                new Middleware\GraphQLMiddleware(new Api()),
-                new Middleware\Authorization(),
+                $this->container['graphql-middleware'],
+                $this->container['authentication-middleware'],
             ];
         }
 
         if ($uri === '/authenticate') {
             return [
-                new Middleware\Authentication(),
+                $this->container['authentication-middleware'],
             ];
         }
     }
