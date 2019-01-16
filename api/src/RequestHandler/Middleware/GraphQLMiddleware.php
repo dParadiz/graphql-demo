@@ -2,11 +2,10 @@
 
 namespace App\RequestHandler\Middleware;
 
+use GraphQL\GraphQL;
+use GraphQL\Type\Schema;
 use Psr\Http\Message;
 use Psr\Http\Server;
-use Zend\Diactoros\Response\JsonResponse;
-use GraphQL\Type\Schema;
-use GraphQL\GraphQL;
 
 class GraphQLMiddleware implements Server\MiddlewareInterface
 {
@@ -59,8 +58,8 @@ class GraphQLMiddleware implements Server\MiddlewareInterface
         } catch (\Exception $e) {
             $output = [
                 'error' => [
-                    'message' => $e->getMessage()
-                ]
+                    'message' => $e->getMessage(),
+                ],
             ];
         }
 

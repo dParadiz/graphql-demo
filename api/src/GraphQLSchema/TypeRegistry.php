@@ -1,6 +1,7 @@
 <?php
 
 namespace App\GraphQLSchema;
+
 use App\Project;
 
 class TypeRegistry
@@ -61,7 +62,7 @@ class TypeRegistry
         return self::$workingUnit;
     }
 
-       /**
+    /**
      * @return Type\MutationResponse
      */
     public static function mutationResponse(): Type\MutationResponse

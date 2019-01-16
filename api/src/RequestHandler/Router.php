@@ -2,8 +2,8 @@
 
 namespace App\RequestHandler;
 
-use Psr\Http\Server\MiddlewareInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Server\MiddlewareInterface;
 
 class Router
 {

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\User;
+
 use MongoDB\Client;
 
 class Repository
@@ -10,7 +11,8 @@ class Repository
      */
     private $mongoClient;
 
-    public function __construct(Client $client) {
+    public function __construct(Client $client)
+    {
 
         $this->mongoClient = $client;
     }
@@ -37,19 +39,20 @@ class Repository
         return $user;
     }
 
-    public function getUsers() : array
+    public function getUsers(): array
     {
         return [];
     }
 
-    public function create($id, $name, $email, $roles) {
+    public function create($id, $name, $email, $roles)
+    {
 
         $userCollection = $this->mongoClient->trackerApi->users;
 
-        $userExist = (bool)$userCollection->count(['id' => $id]);
+        $userExist = (bool) $userCollection->count(['id' => $id]);
 
         if ($userExist) {
-            return  [
+            return [
                 'status' => 'failed',
                 'message' => 'User with ' . $id . ' already exists',
             ];
@@ -62,26 +65,27 @@ class Repository
             'roles' => $roles,
         ]);
 
-        if ($insertResult->getInsertedCount() !== 1 ) {
-            return  [
+        if ($insertResult->getInsertedCount() !== 1) {
+            return [
                 'status' => 'failed',
                 'message' => 'Unable to create user',
             ];
         }
 
-        return  [
+        return [
             'status' => 'success',
             'message' => 'User created',
         ];
     }
 
-    public function update(string $id, string $name = null , string $email = null, array $roles = null) {
+    public function update(string $id, string $name = null, string $email = null, array $roles = null)
+    {
 
         $userCollection = $this->mongoClient->trackerApi->users;
-        $userExist = (bool)$userCollection->count(['id' => $id]);
+        $userExist = (bool) $userCollection->count(['id' => $id]);
 
         if (!$userExist) {
-            return  [
+            return [
                 'status' => 'failed',
                 'message' => 'User with ' . $id . ' does not exists',
             ];
@@ -100,43 +104,43 @@ class Repository
             $updates['roles'] = $roles;
         }
 
-
-        $updateResult = $userCollection->updateOne(['id' => $id], [ '$set' => $updates]);
+        $updateResult = $userCollection->updateOne(['id' => $id], ['$set' => $updates]);
 
         if ($updateResult->getModifiedCount() !== 1) {
 
-            return  [
+            return [
                 'status' => 'failed',
                 'message' => 'No user records were updated',
             ];
         }
 
-        return  [
+        return [
             'status' => 'success',
             'message' => 'User was updated',
         ];
     }
 
-    public function remove($id) {
+    public function remove($id)
+    {
         $userCollection = $this->mongoClient->trackerApi->users;
 
         try {
             $deleteResult = $userCollection->deleteOne(['id' => $id]);
-        } catch(\Exception $e) {
-            return  [
+        } catch (\Exception $e) {
+            return [
                 'status' => 'failed',
                 'message' => $e->getMessage(),
             ];
         }
         if ($deleteResult->getDeletedCount() !== 1) {
-            return  [
+            return [
                 'status' => 'failed',
                 'message' => 'No user with ' . $id . ' was removed',
             ];
 
         }
 
-        return  [
+        return [
             'status' => 'success',
             'message' => 'User was removed',
         ];

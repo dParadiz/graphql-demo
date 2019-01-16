@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Project;
+
 use MongoDB\Client;
 
 class Repository
@@ -10,11 +11,11 @@ class Repository
      */
     private $mongoClient;
 
-    public function __construct(Client $client) {
+    public function __construct(Client $client)
+    {
 
         $this->mongoClient = $client;
     }
-
 
     public function getProjectByUserId(string $userId, array $args)
     {
@@ -23,7 +24,7 @@ class Repository
         $project->name = 'Some name';
 
         return [
-            $project
+            $project,
         ];
     }
 }

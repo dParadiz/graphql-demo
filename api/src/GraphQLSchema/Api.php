@@ -2,13 +2,12 @@
 
 namespace App\GraphQLSchema;
 
+use App\Project;
+use App\User;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
-
-use App\User;
-use App\Project;
 
 class Api extends Schema
 {
@@ -21,7 +20,6 @@ class Api extends Schema
      * @var Project\Repository $projectRepository
      */
     private $projectRepository;
-
 
     public function __construct(User\Repository $userRegistry, Project\Repository $projectRepository)
     {
@@ -43,46 +41,46 @@ class Api extends Schema
                 'user' => [
                     'type' => TypeRegistry::user($this->projectRepository),
                     'args' => [
-                        'id' => Type::nonNull(Type::string())
+                        'id' => Type::nonNull(Type::string()),
                     ],
                     'resolve' => function ($context, $args) {
                         return $this->userRegistry->getUserById($args['id']);
-                    }
+                    },
                 ],
                 'users' => [
                     'type' => Type::listOf(TypeRegistry::user($this->projectRepository)),
                     'args' => [
-                        'role' => Type::string()
+                        'role' => Type::string(),
                     ],
                     'resolve' => function ($context, $args) {
                         return $this->userRegistry->getUsers();
-                    }
+                    },
 
                 ],
                 'project' => [
                     'type' => TypeRegistry::project(),
                     'args' => [
                         'id' => Type::string(),
-                    ]
+                    ],
                 ],
                 'projects' => [
                     'type' => Type::listOf(TypeRegistry::project()),
                     'args' => [
                         'id' => Type::string(),
-                    ]
+                    ],
                 ],
                 'workingUnit' => [
                     'type' => TypeRegistry::workingUnit(),
                     'args' => [
                         'id' => Type::string(),
-                    ]
+                    ],
                 ],
                 'workingUnits' => [
                     'type' => Type::listOf(TypeRegistry::workingUnit()),
                     'args' => [
                         'id' => Type::string(),
-                    ]
-                ]
+                    ],
+                ],
             ],
         ]);
     }
@@ -97,12 +95,12 @@ class Api extends Schema
                         'name' => 'userManagementOperations',
                         'fields' => [
                             'create' => [
-                                'type' =>  TypeRegistry::mutationResponse(),
+                                'type' => TypeRegistry::mutationResponse(),
                                 'args' => [
                                     'id' => ['type' => Type::nonNull(Type::string())],
                                     'name' => ['type' => Type::string()],
                                     'email' => ['type' => Type::string()],
-                                    'roles' => ['type' => Type::listOf(Type::string())]
+                                    'roles' => ['type' => Type::listOf(Type::string())],
                                 ],
                             ],
                             'update' => [
@@ -111,13 +109,13 @@ class Api extends Schema
                                     'id' => ['type' => Type::nonNull(Type::string())],
                                     'name' => ['type' => Type::string()],
                                     'email' => ['type' => Type::string()],
-                                    'roles' => ['type' => Type::listOf(Type::string())]
+                                    'roles' => ['type' => Type::listOf(Type::string())],
                                 ],
                             ],
                             'remove' => [
                                 'type' => TypeRegistry::mutationResponse(),
                                 'args' => [
-                                    'id' => ['type' => Type::nonNull(Type::string())]
+                                    'id' => ['type' => Type::nonNull(Type::string())],
                                 ],
 
                             ],
@@ -145,7 +143,7 @@ class Api extends Schema
                         // return null will skip field resolvers
                         return '';
                     },
-                ]
+                ],
             ],
 
         ]);

@@ -18,7 +18,7 @@ class ProjectType extends ObjectType
                     'name' => Type::string(),
 
                 ];
-            }
+            },
         ];
 
         parent::__construct($config);

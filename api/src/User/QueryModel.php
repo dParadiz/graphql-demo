@@ -2,7 +2,6 @@
 
 namespace App\User;
 
-
 class QueryModel
 {
     /**

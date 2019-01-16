@@ -2,13 +2,12 @@
 
 namespace App\GraphQLSchema\Type;
 
-
 use App\GraphQLSchema\TypeRegistry;
+use App\Project;
+use App\User;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
-use App\Project;
-use App\User;
 
 class UserType extends ObjectType
 {
@@ -35,11 +34,11 @@ class UserType extends ObjectType
                                 'type' => Type::int(),
                                 'description' => 'Skipp number of object',
                                 'default' => 0,
-                            ]
+                            ],
 
-                        ]
+                        ],
                     ],
-                    'workingHours' => Type::listOf(TypeRegistry::workingUnit())
+                    'workingHours' => Type::listOf(TypeRegistry::workingUnit()),
                 ];
             },
             'resolveField' => function (User\QueryModel $user, $args, $context, ResolveInfo $info) use ($projectRepository) {

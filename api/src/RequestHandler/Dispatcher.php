@@ -1,13 +1,11 @@
 <?php
 
-
 namespace App\RequestHandler;
 
-
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Psr\Http\Message\ResponseInterface;
 use Zend\Diactoros\Response\JsonResponse;
 use Zend\HttpHandlerRunner\Emitter\SapiEmitter;
 
@@ -36,26 +34,26 @@ class Dispatcher
             $this->stack,
             function (RequestHandlerInterface $handler, MiddlewareInterface $middleware) {
                 return new class($handler, $middleware) implements RequestHandlerInterface
-                {
+            {
                     /** @var RequestHandlerInterface */
                     private $handler;
                     /** @var MiddlewareInterface */
                     private $middleware;
 
                     public function __construct($handler, $middleware)
-                    {
+                {
                         $this->handler = $handler;
                         $this->middleware = $middleware;
                     }
 
                     public function handle(ServerRequestInterface $request): ResponseInterface
-                    {
+                {
                         return $this->middleware->process($request, $this->handler);
                     }
                 };
             },
             new class implements RequestHandlerInterface
-            {
+        {
 
                 /**
                  * Handle the request and return a response.
@@ -63,7 +61,7 @@ class Dispatcher
                  * @return ResponseInterface
                  */
                 public function handle(ServerRequestInterface $request): ResponseInterface
-                {
+            {
                     return new JsonResponse([]);
                 }
             });
