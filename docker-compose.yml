@@ -17,6 +17,8 @@ services:
       - ./docker/api/sites-available:/etc/apache2/sites-available
     ports:
       - 127.0.0.33:80:80
+    depends_on:
+      - storage
 
   storage:
     image: mongo:4
