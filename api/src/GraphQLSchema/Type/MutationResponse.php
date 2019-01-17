@@ -7,7 +7,12 @@ use GraphQL\Type\Definition\Type;
 
 class MutationResponse extends ObjectType
 {
-    public function __construct()
+    /** @var string */
+    public $status;
+    /** @var string */
+    public $message;
+
+    public function __construct(string $status = '', string $message = '')
     {
         $config = [
             'name' => 'MutationResponse',
@@ -20,6 +25,9 @@ class MutationResponse extends ObjectType
         ];
 
         parent::__construct($config);
+
+        $this->status = $status;
+        $this->message = $message;
     }
 
 }

@@ -2,35 +2,30 @@
 
 namespace App\GraphQLSchema;
 
-use App\Project;
+use App\GraphQLSchema\Type\MutationResponse;
 use App\User;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
+use MongoDB\Client;
+use MongoDB\Model\BSONDocument;
 
 class Api extends Schema
 {
     /**
-     * @var User\Repository $userRegistry
+     * @var Client
      */
-    private $userRegistry;
+    private $mongoClient;
 
-    /**
-     * @var Project\Repository $projectRepository
-     */
-    private $projectRepository;
-
-    public function __construct(User\Repository $userRegistry, Project\Repository $projectRepository)
+    public function __construct(Client $client)
     {
-        $this->userRegistry = $userRegistry;
-        $this->projectRepository = $projectRepository;
+        $this->mongoClient = $client;
 
         parent::__construct([
             'query' => $this->getQuery(),
             'mutation' => $this->getMutation(),
         ]);
-
     }
 
     private function getQuery(): ObjectType
@@ -39,21 +34,33 @@ class Api extends Schema
             'name' => 'Query',
             'fields' => [
                 'user' => [
-                    'type' => TypeRegistry::user($this->projectRepository),
+                    'type' => TypeRegistry::user(),
                     'args' => [
                         'id' => Type::nonNull(Type::string()),
                     ],
                     'resolve' => function ($context, $args) {
-                        return $this->userRegistry->getUserById($args['id']);
+                        $userCollection = $this->mongoClient->trackerApi->users;
+
+                        $userData = $userCollection->findOne(['id' => $args['id']]);
+
+                        return $userData;
                     },
                 ],
                 'users' => [
-                    'type' => Type::listOf(TypeRegistry::user($this->projectRepository)),
+                    'type' => Type::listOf(TypeRegistry::user()),
                     'args' => [
                         'role' => Type::string(),
                     ],
                     'resolve' => function ($context, $args) {
-                        return $this->userRegistry->getUsers();
+                        $userCollection = $this->mongoClient->trackerApi->users;
+
+                        $userList = [];
+                        /** @var BSONDocument $user */
+                        foreach ($userCollection->find() as $user) {
+                            $userList[] = $user;
+                        }
+
+                        return $userList;
                     },
 
                 ],
@@ -121,17 +128,39 @@ class Api extends Schema
                             ],
                         ],
                         'resolveField' => function ($data, $args, $context, ResolveInfo $info) {
+                            $userCollection = $this->mongoClient->trackerApi->users;
+
+                            $id = $args['id'];
+                            $userDocument = array_filter($args);
 
                             if ($info->fieldName === 'create') {
-                                return $this->userRegistry->create($args['id'], $args['name'], $args['email'], $args['roles']);
+                                try {
+                                    (new User\Create($userCollection))->execute($id, $userDocument);
+
+                                    return new MutationResponse('success', 'User created');
+                                } catch (\RuntimeException $e) {
+                                    return new MutationResponse('failed', $e->getMessage());
+                                }
                             }
 
                             if ($info->fieldName === 'update') {
-                                return $this->userRegistry->update($args['id'], $args['name'], $args['email'], $args['roles']);
+                                try {
+                                    (new User\Update($userCollection))->execute($id, $userDocument);
+
+                                    return new MutationResponse('success', 'User was updated');
+                                } catch (\RuntimeException $e) {
+                                    return new MutationResponse('failed', $e->getMessage());
+                                }
                             }
 
                             if ($info->fieldName === 'remove') {
-                                return $this->userRegistry->remove($args['id']);
+                                try {
+                                    (new User\Delete($userCollection))->execute($id);
+
+                                    return new MutationResponse('success', 'User was removed');
+                                } catch (\RuntimeException $e) {
+                                    return new MutationResponse('failed', $e->getMessage());
+                                }
                             }
 
                             return '';
@@ -141,7 +170,7 @@ class Api extends Schema
                         // user field resolver
                         // maybe permission check
                         // return null will skip field resolvers
-                        return '';
+                        return [];
                     },
                 ],
             ],

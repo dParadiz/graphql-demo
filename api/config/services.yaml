@@ -3,15 +3,9 @@ services:
     mongo_client:
       class:       MongoDB\Client
       arguments:  ['mongodb://root:auNgooqu7E@storage:27017']
-    user_repo:
-      class:      App\User\Repository
-      arguments:  ['@mongo_client']
-    project_repo:
-      class:      App\Project\Repository
-      arguments:  ['@mongo_client']
     graphql_api:
       class:       App\GraphQLSchema\Api
-      arguments:  ['@user_repo', '@project_repo']
+      arguments:  ['@mongo_client']
     graphql_middleware:
         class:     App\RequestHandler\Middleware\GraphQLMiddleware
         arguments: ['@graphql_api']

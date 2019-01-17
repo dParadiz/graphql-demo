@@ -2,8 +2,6 @@
 
 namespace App\GraphQLSchema;
 
-use App\Project;
-
 class TypeRegistry
 {
     /**
@@ -29,10 +27,10 @@ class TypeRegistry
     /**
      * @return Type\UserType
      */
-    public static function user(Project\Repository $projectRepository): Type\UserType
+    public static function user(): Type\UserType
     {
         if (null === self::$user) {
-            self::$user = new Type\UserType($projectRepository);
+            self::$user = new Type\UserType();
         }
 
         return self::$user;

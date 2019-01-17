@@ -3,15 +3,13 @@
 namespace App\GraphQLSchema\Type;
 
 use App\GraphQLSchema\TypeRegistry;
-use App\Project;
-use App\User;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
 
 class UserType extends ObjectType
 {
-    public function __construct(Project\Repository $projectRepository)
+    public function __construct()
     {
         $config = [
             'name' => 'User',
@@ -41,9 +39,9 @@ class UserType extends ObjectType
                     'workingHours' => Type::listOf(TypeRegistry::workingUnit()),
                 ];
             },
-            'resolveField' => function (User\QueryModel $user, $args, $context, ResolveInfo $info) use ($projectRepository) {
+            'resolveField' => function ($user, $args, $context, ResolveInfo $info) {
                 if ($info->fieldName === 'projects') {
-                    return $projectRepository->getProjectByUserId($user->id, $args);
+                    return [];
                 }
 
                 if ($info->fieldName === 'workingHours') {
