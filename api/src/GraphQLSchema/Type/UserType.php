@@ -28,9 +28,9 @@ class UserType extends ObjectType
                                 'description' => 'Limit the list of user projects.',
                                 'default' => 5,
                             ],
-                            'skipp' => [
+                            'skip' => [
                                 'type' => Type::int(),
-                                'description' => 'Skipp number of object',
+                                'description' => 'Skip number of object',
                                 'default' => 0,
                             ],
 

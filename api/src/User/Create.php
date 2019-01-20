@@ -9,7 +9,7 @@ class Create
     /**
      * @var \MongoDB\Collection
      */
-    private $userCollection;
+    private $collection;
 
     /**
      * CreateUser constructor.
@@ -18,18 +18,20 @@ class Create
      */
     public function __construct(\MongoDB\Collection $collection)
     {
-        $this->userCollection = $collection;
+        $this->collection = $collection;
     }
 
-    public function execute(string $id, array $userDocument)
+    public function execute(string $id, array $document)
     {
-        $userExist = (bool)$this->userCollection->countDocuments(['id' => $id]);
 
-        if ($userExist) {
+        $exist = (bool)$this->collection->countDocuments(['id' => $id]);
+
+        if ($exist) {
             throw new RuntimeException('User with ' . $id . ' already exists');
         }
 
-        $insertResult = $this->userCollection->insertOne($userDocument);
+        $document['id'] = $id;
+        $insertResult = $this->collection->insertOne($document);
 
         if ($insertResult->getInsertedCount() !== 1) {
             throw new RuntimeException('\'Unable to create user\'');

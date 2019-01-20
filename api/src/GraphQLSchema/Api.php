@@ -4,6 +4,7 @@ namespace App\GraphQLSchema;
 
 use App\GraphQLSchema\Type\MutationResponse;
 use App\User;
+use App\Project;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
@@ -69,6 +70,13 @@ class Api extends Schema
                     'args' => [
                         'id' => Type::string(),
                     ],
+                    'resolve' => function ($context, $args) {
+                        $collection = $this->mongoClient->trackerApi->projects;
+
+                        $project = $collection->findOne(['id' => $args['id']]);
+
+                        return $project;
+                    },
                 ],
                 'projects' => [
                     'type' => Type::listOf(TypeRegistry::project()),
@@ -124,7 +132,6 @@ class Api extends Schema
                                 'args' => [
                                     'id' => ['type' => Type::nonNull(Type::string())],
                                 ],
-
                             ],
                         ],
                         'resolveField' => function ($data, $args, $context, ResolveInfo $info) {
@@ -135,6 +142,7 @@ class Api extends Schema
 
                             if ($info->fieldName === 'create') {
                                 try {
+                                    
                                     (new User\Create($userCollection))->execute($id, $userDocument);
 
                                     return new MutationResponse('success', 'User created');
@@ -158,6 +166,148 @@ class Api extends Schema
                                     (new User\Delete($userCollection))->execute($id);
 
                                     return new MutationResponse('success', 'User was removed');
+                                } catch (\RuntimeException $e) {
+                                    return new MutationResponse('failed', $e->getMessage());
+                                }
+                            }
+
+                            return '';
+                        },
+                    ]),
+                    'resolve' => function ($context, $args) {
+                        // user field resolver
+                        // maybe permission check
+                        // return null will skip field resolvers
+                        return [];
+                    },
+                ],
+                'project' => [
+                    'type' => new ObjectType([
+                        'name' => 'projectManagementOperations',
+                        'fields' => [
+                            'create' => [
+                                'type' => TypeRegistry::mutationResponse(),
+                                'args' => [
+                                    'id' => ['type' => Type::nonNull(Type::string())],
+                                    'name' => ['type' => Type::nonNull(Type::string())],
+                                    'description' => ['type' => Type::string()],
+                                ],
+                            ],
+                            'update' => [
+                                'type' => TypeRegistry::mutationResponse(),
+                                'args' => [
+                                    'id' => ['type' => Type::nonNull(Type::string())],
+                                    'name' => ['type' => Type::string()],
+                                    'description' => ['type' => Type::string()],
+                                ],
+                            ],
+                            'remove' => [
+                                'type' => TypeRegistry::mutationResponse(),
+                                'args' => [
+                                    'id' => ['type' => Type::nonNull(Type::string())],
+                                ],
+
+                            ],
+                            'addOrUpdateMember' => [
+                                'type' => TypeRegistry::mutationResponse(),
+                                'args' => [
+                                    'id' => ['type' => Type::nonNull(Type::string())],
+                                    'member' =>  ['type' => TypeRegistry::projectMember()],
+
+                                ],
+                            ],
+                            'removeMember' => [
+                                'type' => TypeRegistry::mutationResponse(),
+                                'args' => [
+                                    'id' => ['type' => Type::nonNull(Type::string())],
+                                    'member' => ['type' => Type::nonNull(TypeRegistry::projectMember())],
+                                ],
+                            ],
+                            'addCategory' => [
+                                'type' => TypeRegistry::mutationResponse(),
+                                'args' => [
+                                    'id' => ['type' => Type::nonNull(Type::string())],
+                                    'category' => ['type' => Type::nonNull(TypeRegistry::projectCategory())],
+                                ],
+                            ],
+                            'removeCategory' => [
+                                'type' => TypeRegistry::mutationResponse(),
+                                'args' => [
+                                    'id' => ['type' => Type::nonNull(Type::string())],
+                                    'category' => ['type' => Type::nonNull(TypeRegistry::projectCategory())],
+                                ],
+                            ]
+                        ],
+                        'resolveField' => function ($data, $args, $context, ResolveInfo $info) {
+                            $projectCollection = $this->mongoClient->trackerApi->projects;
+                            $userCollection = $this->mongoClient->trackerApi->users;
+
+                            $id = $args['id'];
+
+                            if ($info->fieldName === 'create') {
+
+                                $document = array_filter($args);
+                                try {
+                                    (new Project\Create($projectCollection, $userCollection))->execute($id, $document);
+
+                                    return new MutationResponse('success', 'Project created');
+                                } catch (\Exception $e) {
+                                    return new MutationResponse('failed', $e->getMessage());
+                                }
+                            }
+
+                            if ($info->fieldName === 'update') {
+                                try {
+                                    $document = array_filter($args);
+                                    (new Project\Update($projectCollection, $userCollection))->execute($id, $document);
+
+                                    return new MutationResponse('success', 'Project was updated');
+                                } catch (\RuntimeException $e) {
+                                    return new MutationResponse('failed', $e->getMessage());
+                                }
+                            }
+
+                            if ($info->fieldName === 'remove') {
+                                try {
+                                    (new Project\Delete($projectCollection))->execute($id);
+
+                                    return new MutationResponse('success', 'Project was removed');
+                                } catch (\RuntimeException $e) {
+                                    return new MutationResponse('failed', $e->getMessage());
+                                }
+                            }
+
+                            if ($info->fieldName === 'addOrUpdateMember') {
+                                try {
+                                    (new Project\AddOrUpdateMember($projectCollection, $userCollection))->execute($id, $args['member']);
+                                    return new MutationResponse('success', 'Project members were updated');
+                                } catch (\RuntimeException $e) {
+                                    return new MutationResponse('failed', $e->getMessage());
+                                }
+                            }
+
+                            if ($info->fieldName === 'removeMember') {
+                                try {
+                                    (new Project\RemoveMember($projectCollection))->execute($id, $args['member']);
+                                    return new MutationResponse('success', 'Project members were updated');
+                                } catch (\RuntimeException $e) {
+                                    return new MutationResponse('failed', $e->getMessage());
+                                }
+                            }
+
+                            if ($info->fieldName === 'addCategory') {
+                                try {
+                                    (new Project\AddCategory($projectCollection))->execute($id, $args['category']);
+                                    return new MutationResponse('success', 'Project categories were updated');
+                                } catch (\RuntimeException $e) {
+                                    return new MutationResponse('failed', $e->getMessage());
+                                }
+                            }
+
+                            if ($info->fieldName === 'removeCategory') {
+                                try {
+                                    (new Project\RemoveCategory($projectCollection))->execute($id, $args['category']);
+                                    return new MutationResponse('success', 'Project categories were updated');
                                 } catch (\RuntimeException $e) {
                                     return new MutationResponse('failed', $e->getMessage());
                                 }

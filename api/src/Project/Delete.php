@@ -1,6 +1,6 @@
 <?php
 
-namespace App\User;
+namespace App\Project;
 
 use RuntimeException;
 
@@ -26,7 +26,7 @@ class Delete
         $deleteResult = $this->collection->deleteOne(['id' => $id]);
 
         if ($deleteResult->getDeletedCount() !== 1) {
-            throw new RuntimeException('No user with ' . $id . ' was removed');
+            throw new RuntimeException('No project with ' . $id . ' was removed');
         }
     }
 }

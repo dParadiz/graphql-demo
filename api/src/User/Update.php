@@ -9,7 +9,7 @@ class Update
     /**
      * @var \MongoDB\Collection
      */
-    private $userCollection;
+    private $collection;
 
     /**
      * CreateUser constructor.
@@ -18,20 +18,20 @@ class Update
      */
     public function __construct(\MongoDB\Collection $collection)
     {
-        $this->userCollection = $collection;
+        $this->collection = $collection;
     }
 
-    public function execute(string $id, array $userDocument)
+    public function execute(string $id, array $document)
     {
-        $userExist = (bool)$this->userCollection->countDocuments(['id' => $id]);
+        $exists = (bool)$this->collection->countDocuments(['id' => $id]);
 
-        if (!$userExist) {
+        if (!$exists) {
             throw new RuntimeException('User with ' . $id . ' does not exists');
         }
 
-        unset($userDocument['id']);
+        unset($document['id']);
 
-        $updateResult = $this->userCollection->updateOne(['id' => $id], ['$set' => $userDocument]);
+        $updateResult = $this->collection->updateOne(['id' => $id], ['$set' => $document]);
 
         if ($updateResult->getModifiedCount() !== 1) {
             throw new RuntimeException('No user records were updated');

@@ -38,5 +38,8 @@
     "auto-scripts": {
 
     }
+  },
+  "require-dev": {
+    "squizlabs/php_codesniffer": "^3.4"
   }
 }

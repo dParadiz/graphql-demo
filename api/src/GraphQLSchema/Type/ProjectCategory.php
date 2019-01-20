@@ -2,22 +2,20 @@
 
 namespace App\GraphQLSchema\Type;
 
-use GraphQL\Type\Definition\ObjectType;
+use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
 
-class ProjectType extends ObjectType
+class ProjectCategory extends InputObjectType
 {
     public function __construct()
     {
         $config = [
-            'name' => 'Project',
-            'description' => 'Project',
+            'name' => 'ProjectCategory',
+            'description' => 'Project Category',
             'fields' => function () {
                 return [
-                    'id' => Type::string(),
+                    'id' =>  Type::nonNull(Type::string()),
                     'name' => Type::string(),
-                    'description' => Type::string(),
-
                 ];
             },
         ];

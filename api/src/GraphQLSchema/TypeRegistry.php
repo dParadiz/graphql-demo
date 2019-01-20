@@ -25,6 +25,15 @@ class TypeRegistry
     private static $mutationResponse;
 
     /**
+     * @var Type\ProjectMember
+     */
+    private static $projectMember;
+
+    /**
+     * @var Type\ProjectCategory
+     */
+    private static $projectCategory;
+    /**
      * @return Type\UserType
      */
     public static function user(): Type\UserType
@@ -70,6 +79,30 @@ class TypeRegistry
         }
 
         return self::$mutationResponse;
+    }
+
+    /**
+     * @return Type\ProjectMember
+     */
+    public static function projectMember(): Type\ProjectMember
+    {
+        if (null === self::$projectMember) {
+            self::$projectMember = new Type\ProjectMember();
+        }
+
+        return self::$projectMember;
+    }
+
+    /**
+     * @return Type\ProjectCategory
+     */
+    public static function projectCategory(): Type\ProjectCategory
+    {
+        if (null === self::$projectCategory) {
+            self::$projectCategory = new Type\ProjectCategory();
+        }
+
+        return self::$projectCategory;
     }
 
 }
