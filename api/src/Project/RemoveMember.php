@@ -41,7 +41,7 @@ class RemoveMember
             $members = $project['members']->getArrayCopy();
         }
 
-        $project['members'] = array_filter($members, function($member) use ($newMember) {
+        $project['members'] = array_filter($members, function ($member) use ($newMember) {
             return $member['id'] !== $newMember['id'];
         });
 

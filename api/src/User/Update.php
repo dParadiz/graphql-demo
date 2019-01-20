@@ -23,7 +23,7 @@ class Update
 
     public function execute(string $id, array $document)
     {
-        $exists = (bool)$this->collection->countDocuments(['id' => $id]);
+        $exists = (bool) $this->collection->countDocuments(['id' => $id]);
 
         if (!$exists) {
             throw new RuntimeException('User with ' . $id . ' does not exists');

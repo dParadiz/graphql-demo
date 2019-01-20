@@ -37,7 +37,7 @@ class AddCategory
             $categories = $project['categories']->getArrayCopy();
         }
 
-        $project['categories'] = array_filter($categories, function($category) use ($newCategory) {
+        $project['categories'] = array_filter($categories, function ($category) use ($newCategory) {
             return $category['id'] !== $newCategory['id'];
         });
 

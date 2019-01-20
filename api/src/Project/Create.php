@@ -33,7 +33,6 @@ class Create
 
         $exist = (bool) $this->projectCollection->countDocuments(['id' => $id]);
 
-
         if ($exist) {
             throw new RuntimeException('Project with ' . $id . ' already exists');
         }

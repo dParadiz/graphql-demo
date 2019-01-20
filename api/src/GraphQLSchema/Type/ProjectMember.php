@@ -14,7 +14,7 @@ class ProjectMember extends InputObjectType
             'description' => 'Project Member',
             'fields' => function () {
                 return [
-                    'id' =>  Type::nonNull(Type::string()),
+                    'id' => Type::nonNull(Type::string()),
                     'roles' => Type::listOf(Type::string()),
                 ];
             },

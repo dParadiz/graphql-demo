@@ -3,8 +3,8 @@
 namespace App\GraphQLSchema;
 
 use App\GraphQLSchema\Type\MutationResponse;
-use App\User;
 use App\Project;
+use App\User;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
@@ -142,7 +142,7 @@ class Api extends Schema
 
                             if ($info->fieldName === 'create') {
                                 try {
-                                    
+
                                     (new User\Create($userCollection))->execute($id, $userDocument);
 
                                     return new MutationResponse('success', 'User created');
@@ -212,7 +212,7 @@ class Api extends Schema
                                 'type' => TypeRegistry::mutationResponse(),
                                 'args' => [
                                     'id' => ['type' => Type::nonNull(Type::string())],
-                                    'member' =>  ['type' => TypeRegistry::projectMember()],
+                                    'member' => ['type' => TypeRegistry::projectMember()],
 
                                 ],
                             ],
@@ -236,7 +236,7 @@ class Api extends Schema
                                     'id' => ['type' => Type::nonNull(Type::string())],
                                     'category' => ['type' => Type::nonNull(TypeRegistry::projectCategory())],
                                 ],
-                            ]
+                            ],
                         ],
                         'resolveField' => function ($data, $args, $context, ResolveInfo $info) {
                             $projectCollection = $this->mongoClient->trackerApi->projects;

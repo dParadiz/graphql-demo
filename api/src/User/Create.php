@@ -24,7 +24,7 @@ class Create
     public function execute(string $id, array $document)
     {
 
-        $exist = (bool)$this->collection->countDocuments(['id' => $id]);
+        $exist = (bool) $this->collection->countDocuments(['id' => $id]);
 
         if ($exist) {
             throw new RuntimeException('User with ' . $id . ' already exists');

@@ -35,7 +35,7 @@ class AddOrUpdateMember
             throw new RuntimeException('No project with ' . $id . ' found');
         }
 
-        $memberExists = (bool)$this->userCollection->countDocuments(['id' => $newMember['id']]);
+        $memberExists = (bool) $this->userCollection->countDocuments(['id' => $newMember['id']]);
 
         if (!$memberExists) {
             throw new RuntimeException('No user with ' . $newMember['id'] . ' found');
@@ -47,12 +47,11 @@ class AddOrUpdateMember
         if (isset($project['members'])) {
             $members = $project['members']->getArrayCopy();
         }
-        $project['members'] = array_filter($members, function($member) use ($newMember) {
+        $project['members'] = array_filter($members, function ($member) use ($newMember) {
             return $member['id'] === $newMember['id'];
         });
 
         $project['members'][] = $newMember;
-
 
         $updateResult = $this->projectCollection->updateOne(['id' => $id], ['$set' => $project]);
 

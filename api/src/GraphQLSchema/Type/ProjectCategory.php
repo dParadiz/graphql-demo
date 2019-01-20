@@ -14,7 +14,7 @@ class ProjectCategory extends InputObjectType
             'description' => 'Project Category',
             'fields' => function () {
                 return [
-                    'id' =>  Type::nonNull(Type::string()),
+                    'id' => Type::nonNull(Type::string()),
                     'name' => Type::string(),
                 ];
             },
