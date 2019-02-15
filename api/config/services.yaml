@@ -1,3 +1,8 @@
+parameters:
+  jwt.key: 'someKey'
+  jwt.algorithms:
+    - HS256
+
 services:
   mongo_client:
     class:       MongoDB\Client
@@ -11,8 +16,13 @@ services:
   App\Handler\Authentication:
     class:     App\Handler\Authentication
 
+  App\Middleware\Authorization\Strategy\Jwt:
+    class: App\Middleware\Authorization\Strategy\Jwt
+    arguments: ['%jwt.key%', '%jwt.algorithms%']
+
   App\Middleware\Authorization:
     class:     App\Middleware\Authorization
+    arguments: ['@App\Middleware\Authorization\Strategy\Jwt']
 
   App\ResponseFactory:
     class: App\ResponseFactory
