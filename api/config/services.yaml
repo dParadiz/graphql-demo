@@ -1,13 +1,21 @@
-
 services:
-    mongo_client:
-      class:       MongoDB\Client
-      arguments:  ['mongodb://root:auNgooqu7E@storage:27017']
-    graphql_api:
-      class:       App\GraphQLSchema\Api
-      arguments:  ['@mongo_client']
-    graphql_middleware:
-        class:     App\RequestHandler\Middleware\GraphQLMiddleware
-        arguments: ['@graphql_api']
-    authentication_middleware:
-        class:     App\RequestHandler\Middleware\Authorization
+  mongo_client:
+    class:       MongoDB\Client
+    arguments:  ['mongodb://root:auNgooqu7E@storage:27017']
+  graphql_api:
+    class:       App\GraphQLSchema\Api
+    arguments:  ['@mongo_client']
+  App\Handler\GraphQL:
+    class:     App\Handler\GraphQL
+    arguments: ['@graphql_api']
+  App\Handler\Authentication:
+    class:     App\Handler\Authentication
+
+  App\Middleware\Authorization:
+    class:     App\Middleware\Authorization
+
+  App\ResponseFactory:
+    class: App\ResponseFactory
+
+  Psr\Http\Message\ResponseFactoryInterface:
+    alias: App\ResponseFactory

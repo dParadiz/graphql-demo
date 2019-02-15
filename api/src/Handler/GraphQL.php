@@ -1,13 +1,13 @@
 <?php
 
-namespace App\RequestHandler\Middleware;
+namespace App\Handler;
 
-use GraphQL\GraphQL;
+use GraphQL\GraphQL as GraphQLFacade;
 use GraphQL\Type\Schema;
 use Psr\Http\Message;
-use Psr\Http\Server;
+use Zend\Diactoros\Response\JsonResponse;
 
-class GraphQLMiddleware implements Server\MiddlewareInterface
+class GraphQL implements HandlerInterface
 {
     /** @var Schema */
     private $schema;
@@ -17,7 +17,7 @@ class GraphQLMiddleware implements Server\MiddlewareInterface
 
     /**
      * @param Schema $schema
-     * @param array $rootValues
+     * @param array  $rootValues
      */
     public function __construct(Schema $schema, array $rootValues = [])
     {
@@ -30,14 +30,11 @@ class GraphQLMiddleware implements Server\MiddlewareInterface
      * response creation to a handler.
      *
      * @param Message\ServerRequestInterface $request
-     * @param Server\RequestHandlerInterface $handler
      *
      * @return Message\ResponseInterface
      */
-    public function process(Message\ServerRequestInterface $request, Server\RequestHandlerInterface $handler): Message\ResponseInterface
+    public function __invoke(Message\ServerRequestInterface $request): Message\ResponseInterface
     {
-        $response = $handler->handle($request);
-
         try {
             $input = json_decode($request->getBody()->getContents(), true);
             $query = $input['query'];
@@ -45,7 +42,7 @@ class GraphQLMiddleware implements Server\MiddlewareInterface
             $rootValues = $this->rootValues;
             $rootValues['auth'] = $request->getAttribute('auth', null);
 
-            $result = GraphQL::executeQuery(
+            $result = GraphQLFacade::executeQuery(
                 $this->schema,
                 $query,
                 array_filter($rootValues),
@@ -54,7 +51,6 @@ class GraphQLMiddleware implements Server\MiddlewareInterface
             );
 
             $output = $result->toArray();
-
         } catch (\Exception $e) {
             $output = [
                 'error' => [
@@ -63,6 +59,6 @@ class GraphQLMiddleware implements Server\MiddlewareInterface
             ];
         }
 
-        return $response->withPayload($output);
+        return new JsonResponse($output);
     }
 }
