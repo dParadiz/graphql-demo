@@ -1,16 +1,13 @@
 <?php
+declare(strict_types=1);
 
 namespace App\GraphQLSchema;
 
 use App\GraphQLSchema\Type\MutationResponse;
 use App\Project;
 use App\User;
-use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\ResolveInfo;
-use GraphQL\Type\Definition\Type;
-use GraphQL\Type\Schema;
-use MongoDB\Client;
-use MongoDB\Model\BSONDocument;
+use GraphQL\Type\{Definition\ObjectType, Definition\ResolveInfo, Definition\Type, Schema};
+use MongoDB\{Client, Model\BSONDocument};
 
 class Api extends Schema
 {

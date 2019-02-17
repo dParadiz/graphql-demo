@@ -1,22 +1,24 @@
 <?php
+declare(strict_types=1);
 
 namespace App\User;
 
+use MongoDB\Collection;
 use RuntimeException;
 
 class Update
 {
     /**
-     * @var \MongoDB\Collection
+     * @var Collection
      */
     private $collection;
 
     /**
      * CreateUser constructor.
      *
-     * @param \MongoDB\Collection $collection
+     * @param Collection $collection
      */
-    public function __construct(\MongoDB\Collection $collection)
+    public function __construct(Collection $collection)
     {
         $this->collection = $collection;
     }

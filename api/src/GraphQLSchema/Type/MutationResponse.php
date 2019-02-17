@@ -1,9 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace App\GraphQLSchema\Type;
 
-use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\{ObjectType, Type};
 
 class MutationResponse extends ObjectType
 {

@@ -1,27 +1,30 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Project;
 
+use MongoDB\Collection;
 use RuntimeException;
 
 class AddOrUpdateMember
 {
     /**
-     * @var \MongoDB\Collection
+     * @var Collection
      */
     private $projectCollection;
 
     /**
-     * @var \MongoDB\Collection
+     * @var Collection
      */
     private $userCollection;
 
     /**
      * CreateUser constructor.
      *
-     * @param \MongoDB\Collection $collection
+     * @param Collection $projectCollection
+     * @param Collection $userCollection
      */
-    public function __construct(\MongoDB\Collection $projectCollection, \MongoDB\Collection $userCollection)
+    public function __construct(Collection $projectCollection, Collection $userCollection)
     {
         $this->projectCollection = $projectCollection;
         $this->userCollection = $userCollection;
@@ -35,7 +38,7 @@ class AddOrUpdateMember
             throw new RuntimeException('No project with ' . $id . ' found');
         }
 
-        $memberExists = (bool) $this->userCollection->countDocuments(['id' => $newMember['id']]);
+        $memberExists = (bool)$this->userCollection->countDocuments(['id' => $newMember['id']]);
 
         if (!$memberExists) {
             throw new RuntimeException('No user with ' . $newMember['id'] . ' found');

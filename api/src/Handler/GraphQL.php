@@ -1,9 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Handler;
 
-use GraphQL\GraphQL as GraphQLFacade;
-use GraphQL\Type\Schema;
+use GraphQL\{GraphQL as GraphQLFacade, Type\Schema};
 use Psr\Http\Message;
 use Zend\Diactoros\Response\JsonResponse;
 

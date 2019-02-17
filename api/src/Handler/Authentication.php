@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Handler;
 
@@ -19,7 +20,7 @@ class Authentication implements HandlerInterface
     {
         return new JsonResponse([
 
-            'token' => 'token123',
+            'token' => 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.h6ft-hLgByiDqa1dnFYkxH-01IHVyWCON5pC_hOfm_c',
         ]);
     }
 }

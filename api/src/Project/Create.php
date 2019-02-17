@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Project;
 
@@ -21,6 +22,7 @@ class Create
      * CreateUser constructor.
      *
      * @param Collection $projectCollection
+     * @param Collection $userCollection
      */
     public function __construct(Collection $projectCollection, Collection $userCollection)
     {
@@ -31,7 +33,7 @@ class Create
     public function execute(string $id, array $document)
     {
 
-        $exist = (bool) $this->projectCollection->countDocuments(['id' => $id]);
+        $exist = (bool)$this->projectCollection->countDocuments(['id' => $id]);
 
         if ($exist) {
             throw new RuntimeException('Project with ' . $id . ' already exists');

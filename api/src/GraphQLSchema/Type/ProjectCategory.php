@@ -1,9 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace App\GraphQLSchema\Type;
 
-use GraphQL\Type\Definition\InputObjectType;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\{InputObjectType, Type};
 
 class ProjectCategory extends InputObjectType
 {

@@ -1,22 +1,24 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Project;
 
+use MongoDB\Collection;
 use RuntimeException;
 
 class RemoveCategory
 {
     /**
-     * @var \MongoDB\Collection
+     * @var Collection
      */
     private $projectCollection;
 
     /**
      * CreateUser constructor.
      *
-     * @param \MongoDB\Collection $collection
+     * @param Collection $projectCollection
      */
-    public function __construct(\MongoDB\Collection $projectCollection)
+    public function __construct(Collection $projectCollection)
     {
         $this->projectCollection = $projectCollection;
     }

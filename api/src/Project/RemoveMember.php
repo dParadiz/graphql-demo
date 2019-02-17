@@ -1,27 +1,29 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Project;
 
+use MongoDB\Collection;
 use RuntimeException;
 
 class RemoveMember
 {
     /**
-     * @var \MongoDB\Collection
+     * @var Collection
      */
     private $projectCollection;
 
     /**
-     * @var \MongoDB\Collection
+     * @var Collection
      */
     private $userCollection;
 
     /**
      * CreateUser constructor.
      *
-     * @param \MongoDB\Collection $collection
+     * @param Collection $projectCollection
      */
-    public function __construct(\MongoDB\Collection $projectCollection)
+    public function __construct(Collection $projectCollection)
     {
         $this->projectCollection = $projectCollection;
     }

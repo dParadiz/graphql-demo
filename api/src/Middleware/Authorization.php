@@ -1,12 +1,15 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Middleware;
 
 use App\Middleware\Authorization\Strategy\StrategyInterface;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\MiddlewareInterface;
-use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Http\{
+    Message\ResponseInterface,
+    Message\ServerRequestInterface,
+    Server\MiddlewareInterface,
+    Server\RequestHandlerInterface
+};
 use League\Route\Http\Exception\UnauthorizedException;
 
 class Authorization implements MiddlewareInterface
@@ -26,7 +29,7 @@ class Authorization implements MiddlewareInterface
      * Process an incoming server request and return a response, optionally delegating
      * response creation to a handler.
      *
-     * @param ServerRequestInterface  $request
+     * @param ServerRequestInterface $request
      * @param RequestHandlerInterface $handler
      *
      * @return ResponseInterface
